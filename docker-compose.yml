@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: miner-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: bitaxe_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - miner-net
+
+  backend:
+    build: ./backend
+    container_name: miner-backend
+    depends_on:
+      - db
+    environment:
+      # override DB URL to point to the dockerized Postgres
+      DATABASE_URL: postgresql+psycopg2://postgres:password@db:5432/bitaxe_db
+      BITAXE_BASE_URL: http://192.168.1.132
+      COINGECKO_API_BASE: https://api.coingecko.com/api/v3
+      # COINGECKO_API_KEY: ""   # optional
+    networks:
+      - miner-net
+    # אם אתה רוצה גם גישה ישירה ל־backend מחוץ לדוקר – אפשר לפתוח:
+    # ports:
+    #   - "8000:8000"
+
+  frontend:
+    build: ./frontend
+    container_name: miner-frontend
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    networks:
+      - miner-net
+
+networks:
+  miner-net:
+
+volumes:
+  db_data:

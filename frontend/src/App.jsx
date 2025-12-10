@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import StatusCards from './components/StatusCards'
 import HistoryChart from './components/HistoryChart'
-import CryptoPrices from './components/CryptoPrices'   // 👈 חדש
+import CryptoPrices from './components/CryptoPrices'  
 
 const POLL_INTERVAL_MS = 3000
 const HISTORY_INTERVAL_MS = 10000
-const CRYPTO_INTERVAL_MS = 30000   // 👈 כל 30 שניות
+const CRYPTO_INTERVAL_MS = 30000  
 
 export default function App() {
   const [status, setStatus] = useState(null)
   const [history, setHistory] = useState([])
   const [error, setError] = useState(null)
-  const [crypto, setCrypto] = useState(null)        // 👈 חדש
-  const [cryptoError, setCryptoError] = useState(null) // 👈 אופציונלי
+  const [crypto, setCrypto] = useState(null)  
+  const [cryptoError, setCryptoError] = useState(null) // optional
 
   useEffect(() => {
     let statusTimer
@@ -42,7 +42,7 @@ export default function App() {
       }
     }
 
-    const fetchCrypto = async () => {          // 👈 חדש
+    const fetchCrypto = async () => {        
       try {
         const res = await fetch('/api/crypto/prices')
         if (!res.ok) throw new Error('Failed to fetch crypto prices')
@@ -56,7 +56,7 @@ export default function App() {
 
     fetchStatus()
     fetchHistory()
-    fetchCrypto()      // 👈 קריאה ראשונה
+    fetchCrypto()      // first call
 
     statusTimer = setInterval(fetchStatus, POLL_INTERVAL_MS)
     historyTimer = setInterval(fetchHistory, HISTORY_INTERVAL_MS)
@@ -76,7 +76,7 @@ export default function App() {
         <p className="subtitle">FastAPI + React + Vite</p>
       </header>
 
-      {/* פס מחירים מתחת לכותרת */}
+      {/* crypto prices below the header */}
       <CryptoPrices prices={crypto} />
 
       {error && <div className="error-banner">Error: {error}</div>}

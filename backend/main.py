@@ -22,7 +22,7 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"
-        extra = "ignore"  # 👈 חשוב!
+        extra = "ignore" 
 
 
 
@@ -69,7 +69,7 @@ last_prices_time: datetime | None = None
 
 # simple in-memory history buffer
 HISTORY_LIMIT = 2000
-POLL_INTERVAL_SECONDS = 5  # כל כמה שניות למשוך מהכורה
+POLL_INTERVAL_SECONDS = 5  #reading from the miner
 history_buffer: deque[MinerStatus] = deque(maxlen=HISTORY_LIMIT)
 
 @app.get("/api/health")
@@ -111,14 +111,13 @@ async def fetch_miner_info() -> MinerStatus:
     return status
 
 async def miner_polling_loop():
-    # ניתן זמן לשרת לעלות
+    # wait for the server to start
     await asyncio.sleep(2)
 
     while True:
         try:
             status = await fetch_miner_info()
         except Exception as e:
-            # פה אפשר להוסיף logging אם תרצה
             await asyncio.sleep(POLL_INTERVAL_SECONDS)
             continue
 
@@ -141,7 +140,6 @@ async def miner_polling_loop():
             db.commit()
         except Exception:
             db.rollback()
-            # אפשר להוסיף logging
         finally:
             db.close()
 
@@ -160,7 +158,6 @@ async def fetch_crypto_prices() -> CryptoPrices:
 
     headers = {}
     if settings.COINGECKO_API_KEY:
-        # אם בעתיד יהיה לך מפתח – אפשר לשלוח אותו פה
         headers["x-cg-demo-api-key"] = settings.COINGECKO_API_KEY
 
     async with httpx.AsyncClient(timeout=10.0) as client:
@@ -179,7 +176,7 @@ async def fetch_crypto_prices() -> CryptoPrices:
         last_updated=datetime.utcnow(),
     )
 
-    # נשמור בזיכרון את הערך האחרון התקין
+    # save the last valid value in memory
     last_prices = prices
     last_prices_time = prices.last_updated
     return prices
@@ -187,7 +184,7 @@ async def fetch_crypto_prices() -> CryptoPrices:
 
 @app.get("/api/miner/status", response_model=MinerStatus)
 async def get_miner_status(db: Session = Depends(get_db)):
-    # לוקחים את הרשומה האחרונה מה-DB
+    # get the last record from the DB
     record = (
         db.query(MinerStatusRecord)
         .order_by(MinerStatusRecord.timestamp.desc())
@@ -195,7 +192,7 @@ async def get_miner_status(db: Session = Depends(get_db)):
     )
 
     if record is None:
-        # עדיין אין מדידות – אפשר להחזיר 503 או אובייקט offline
+        # still no measurements - return 503 or offline object
         raise HTTPException(status_code=503, detail="No miner data yet")
 
     status = MinerStatus(
@@ -225,7 +222,7 @@ async def get_miner_history(
     if limit > HISTORY_LIMIT:
         limit = HISTORY_LIMIT
 
-    # newest first מה־DB
+    # newest first from the DB
     records = (
         db.query(MinerStatusRecord)
         .order_by(MinerStatusRecord.timestamp.desc())
@@ -233,7 +230,7 @@ async def get_miner_history(
         .all()
     )
 
-    # נהפוך לרשימת MinerStatus (oldest → newest)
+    # convert to list of MinerStatus (oldest → newest)
     items: List[MinerStatus] = []
     for r in reversed(records):
         items.append(
@@ -265,11 +262,11 @@ async def get_crypto_prices():
     except Exception as e:
         print("CRYPTO ERROR:", repr(e))
 
-        # אם יש ערך אחרון תקין מה-5 דקות האחרונות – נחזיר אותו במקום 502
+        # if there is a last valid value from the last 5 minutes, return it instead of 502
         if last_prices and last_prices_time and datetime.utcnow() - last_prices_time < timedelta(minutes=5):
             return last_prices
 
-        # אם אין שום ערך תקין – נחזיר 502
+        # if there is no valid value, return 502
         raise HTTPException(status_code=502, detail=f"Failed to fetch crypto prices: {e}")
 
 # Entry point for uvicorn: uvicorn main:app --reload
