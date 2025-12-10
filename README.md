@@ -1,42 +1,91 @@
+# Miner Bitaxe Dashboard (FastAPI + React + PostgreSQL)
 
-# Bitaxe Gamma 601 – Home Miner Dashboard
+A full-stack monitoring dashboard for the Bitaxe Gamma 601 Bitcoin miner.  
+The system collects real-time miner telemetry, stores historical data in PostgreSQL, fetches crypto prices, and exposes everything through a clean REST API with a modern React/Vite frontend.
 
-Full-stack example project:
+---
 
-- Backend: **FastAPI** (Python) – talks to the Bitaxe AxeOS REST API
-- Frontend: **React + Vite** – dashboard UI
+## 📌 Features
 
-## Structure
+- Real-time miner status (hashrate, temperatures, voltage, shares)
+- Background scheduler that continuously polls the Bitaxe device
+- Persistent logging in PostgreSQL (`miner_status` table)
+- Live BTC & ETH price integration (CoinGecko API)
+- REST API built with FastAPI + Pydantic
+- React + Vite frontend dashboard
+- CURL examples + Postman collection with automated tests
+- Documentation included under `docs/`
 
-- `backend/` – FastAPI app (`/api/miner/status`, `/api/miner/history`)
-- `frontend/` – React + Vite app (cards + hashrate history chart)
+---
 
-## Quick start
+## 🏗 Tech Stack
 
-1. **Backend**
+### Backend
+- Python 3.11+
+- FastAPI
+- SQLAlchemy
+- PostgreSQL
+- Pydantic / Pydantic Settings
+- httpx
+- Async background scheduler
 
+### Frontend
+- React + Vite
+- Fetch API for real-time data updates
+
+---
+
+## 📁 Project Structure
+
+```
+backend/
+frontend/
+docs/
+    api_endpoints.md
+    curl_examples.md
+    architecture.md
+    database_schema.md
+    environment_variables.md
+    monitoring_alerts.md
+    postman/
+        miner-bitaxe-api.postman_collection.json
+```
+
+---
+
+## ⚙️ Installation & Setup
+
+### 1. Clone the repository
+```bash
+git clone <your-repo-url>
+cd SoloLuck
+```
+
+### 2. Backend setup
 ```bash
 cd backend
 python -m venv venv
-source venv/bin/activate  # on Windows: venv\Scripts\activate
+source venv/bin/activate   # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Create a `.env` file in `backend/`:
+### 3. Create `.env` file in backend/
+Fill in your environment variables:
 
-```env
-BITAXE_BASE_URL=http://192.168.1.123
+```
+BITAXE_BASE_URL=http://192.168.1.132
+COINGECKE_API_BASE=https://api.coingecko.com/api/v3
+DATABASE_URL=postgresql+psycopg2://postgres:password@localhost:5432/bitaxe_db
 ```
 
-Then run:
-
+### 4. Start the backend
 ```bash
-uvicorn main:app --reload --port 8000
+uvicorn main:app --reload
 ```
 
-2. **Frontend**
+---
 
-Open a second terminal:
+## 🚀 Frontend setup
 
 ```bash
 cd frontend
@@ -44,11 +93,56 @@ npm install
 npm run dev
 ```
 
-Then open the URL Vite prints (usually `http://localhost:5173`).
+UI available at:  
+👉 http://localhost:5173
 
-The UI will poll:
+---
 
-- `GET /api/miner/status` every 3 seconds
-- `GET /api/miner/history` every 10 seconds
-```
+## 🧪 Testing the API
+
+### Postman  
+Import this collection:
+
+`docs/postman/miner-bitaxe-api.postman_collection.json`
+
+Includes:
+- Health check
+- Miner status
+- History endpoint
+- Crypto price endpoint
+- Automated test scripts
+
+### CURL examples  
+See:  
+`docs/curl_examples.md`
+
+---
+
+## 🗄 Database Schema  
+Documented in:  
+`docs/database_schema.md`
+
+---
+
+## 📚 API Documentation  
+All endpoints documented in:  
+`docs/api_endpoints.md`
+
+FastAPI Swagger UI:  
+👉 http://localhost:8000/docs  
+FastAPI ReDoc UI:  
+👉 http://localhost:8000/redoc
+
+---
+
+## 🧠 Architecture  
+Full system architecture overview found in:  
+`docs/architecture.md`
+
+cs/monitoring_alerts.md`
+
+---
+
+## ✨ Author  
+**Saar Amikam**  
 

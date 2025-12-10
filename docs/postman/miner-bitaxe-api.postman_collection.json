@@ -1,0 +1,226 @@
+{
+  "info": {
+    "_postman_id": "c5821f35-940b-4c7d-8e57-b7efead573e2",
+    "name": "miner-bitaxe-api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "50722633",
+    "_collection_link": "https://saarami11-8367709.postman.co/workspace/c52b7c33-1036-42f6-8e13-63ab83d05185/collection/50722633-c5821f35-940b-4c7d-8e57-b7efead573e2?action=share&source=collection_link&creator=50722633"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response is JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "});",
+              "",
+              "pm.test(\"Health status is ok\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.status).to.eql(\"ok\");",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/health",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "health"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Miner Status",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response is JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "});",
+              "",
+              "pm.test(\"Contains required fields\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json).to.have.property(\"online\");",
+              "    pm.expect(json).to.have.property(\"hash_rate\");",
+              "    pm.expect(json).to.have.property(\"temp_core\");",
+              "    pm.expect(json).to.have.property(\"best_difficulty\");",
+              "});",
+              "",
+              "pm.test(\"Temperature is valid number\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.temp_core).to.be.a(\"number\");",
+              "});",
+              "",
+              "pm.test(\"Miner is not overheating (>90\u00b0C)\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.temp_core).to.be.below(90);",
+              "});",
+              "",
+              "pm.test(\"Response time is acceptable (< 800ms)\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(800);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/miner/status",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "miner",
+            "status"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Miner History",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response is JSON Array\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json).to.be.an(\"array\");",
+              "});",
+              "",
+              "pm.test(\"At least 1 history record exists\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.length).to.be.above(0);",
+              "});",
+              "",
+              "pm.test(\"Each record includes timestamp\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json[0]).to.have.property(\"timestamp\");",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/miner/history?limit=20",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "miner",
+            "history"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "20"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Crypto Prices",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response is JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "});",
+              "",
+              "pm.test(\"BTC & ETH fields exist\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json).to.have.property(\"btc_usd\");",
+              "    pm.expect(json).to.have.property(\"eth_usd\");",
+              "});",
+              "",
+              "pm.test(\"Prices are positive numbers\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.btc_usd).to.be.above(0);",
+              "    pm.expect(json.eth_usd).to.be.above(0);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/crypto/prices",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "crypto",
+            "prices"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
