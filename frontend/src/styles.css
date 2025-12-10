@@ -1,0 +1,191 @@
+
+:root {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #f5f5f5;
+  background-color: #050816;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.app-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(circle at top left, #1a1f3b 0, #050816 55%);
+  color: inherit;
+}
+
+.app-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.subtitle {
+  margin: 0.25rem 0 0;
+  opacity: 0.7;
+  font-size: 0.85rem;
+}
+
+.error-banner {
+  background-color: #7f1d1d;
+  color: #fecaca;
+  padding: 0.75rem 2rem;
+  font-size: 0.9rem;
+}
+
+.app-main {
+  padding: 1.5rem 2rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 0.9rem;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  padding: 1rem 1.1rem;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.65);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.card.wide {
+  grid-column: span 2;
+}
+
+.card.tall {
+  min-height: 260px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.card-header h2,
+.card-header h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.card-body {
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.card-body.row {
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.chart-body {
+  height: 220px;
+}
+
+.label {
+  font-size: 0.8rem;
+  opacity: 0.65;
+}
+
+.value {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.mt {
+  margin-top: 0.4rem;
+}
+
+.chip {
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.chip-online {
+  background-color: #15803d;
+  color: #bbf7d0;
+}
+
+.chip-offline {
+  background-color: #7f1d1d;
+  color: #fecaca;
+}
+
+.chip-secondary {
+  background-color: #1d4ed8;
+  color: #bfdbfe;
+}
+
+@media (max-width: 768px) {
+  .app-header,
+  .app-main,
+  .error-banner {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .card.wide {
+    grid-column: span 1;
+  }
+}
+
+
+.crypto-bar {
+  padding: 0.5rem 2rem;
+  background: rgba(15, 23, 42, 0.9);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+  display: flex;
+  gap: 1.5rem;
+  align-items: baseline;
+  font-size: 0.9rem;
+}
+
+.crypto-bar .label {
+  opacity: 0.7;
+  font-size: 0.8rem;
+}
+
+.crypto-bar .label.small {
+  font-size: 0.75rem;
+}
+
+.crypto-bar .value {
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .crypto-bar {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+}
